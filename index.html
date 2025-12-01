@@ -2,8 +2,28 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
     <title>Alenjofi | AI-Native Developer</title>
+    <meta name="title" content="Alenjofi | AI-Native Developer" />
+    <meta name="description" content="1st-Year B.Tech Student building production-ready AI applications. Creator of Fine Print Breaker. Bridging complex AI with intuitive UI." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://alenjofi.github.io/" />
+    <meta property="og:title" content="Alenjofi | AI-Native Developer" />
+    <meta property="og:description" content="1st-Year B.Tech Student building production-ready AI applications. Creator of Fine Print Breaker. Bridging complex AI with intuitive UI." />
+    <meta property="og:image" content="https://alenjofi.github.io/preview.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://alenjofi.github.io/" />
+    <meta property="twitter:title" content="Alenjofi | AI-Native Developer" />
+    <meta property="twitter:description" content="1st-Year B.Tech Student building production-ready AI applications. Creator of Fine Print Breaker." />
+    <meta property="twitter:image" content="https://alenjofi.github.io/preview.png" />
+    
+    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
     
     <!-- Fonts -->
@@ -54,9 +74,15 @@
     
     <!-- Custom Styles -->
     <style>
-      body {
+      /* FOUC Prevention & Mobile Polish */
+      html, body {
         background-color: #020617;
         color: #f8fafc;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
@@ -83,7 +109,7 @@
       // --- CONSTANTS ---
       const PORTFOLIO_DATA = {
         name: "Alenjofi",
-        role: "B.Tech AI & DS | Rapid Prototyper | AI-Native Developer",
+        role: "B.Tech AI & DS | Rapid Prototyper",
         headline: "Building the Future with AI & Vibe Coding.",
         subHeadline: "I bridge the gap between complex ideas and working products instantly using AI orchestration.",
         status: "Open to Work",
@@ -420,7 +446,7 @@
 
               {/* Footer */}
               <footer className="mt-16 text-center text-slate-600 text-sm">
-                <p>© {new Date().getFullYear()} Alenjofi. Built with 🤖.</p>
+                <p>© {new Date().getFullYear()} Alenjofi. Built with AI🤖.</p>
               </footer>
 
             </main>
@@ -433,5 +459,3 @@
     </script>
   </body>
 </html>
-
-
