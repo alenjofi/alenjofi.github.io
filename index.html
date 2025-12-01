@@ -58,6 +58,7 @@
             animation: {
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'blob': 'blob 7s infinite',
+              'fadeIn': 'fadeIn 0.5s ease-out forwards',
             },
             keyframes: {
               blob: {
@@ -65,6 +66,10 @@
                 '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
                 '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
                 '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
               }
             }
           },
@@ -98,13 +103,20 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #475569;
       }
+      
+      /* Accessibility Focus Styles */
+      *:focus-visible {
+        outline: 2px solid #8b5cf6; /* violet-500 */
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
     </style>
   </head>
   <body>
     <div id="root"></div>
 
     <script type="text/babel" data-presets="react,typescript">
-      const { useState, useEffect } = React;
+      const { useState, useEffect, useRef } = React;
 
       // --- CONSTANTS ---
       const PORTFOLIO_DATA = {
@@ -165,7 +177,7 @@
       );
 
       const SparklesIcon = () => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 5h4"/><path d="M3 9h4"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 5h4"/><path d="M3 9h4"/></svg>
       );
 
       const BrainCircuitIcon = () => (
@@ -191,13 +203,43 @@
       const LightbulbIcon = () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 12 3a4.65 4.65 0 0 0-4.5 5.5c.75.76 1.22 1.52 1.4 2.5"></path></svg>
       );
+      
+      const CopyIcon = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+      );
+      
+      const CheckIcon = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      );
 
       // --- COMPONENT: BentoCard ---
       const BentoCard = ({ children, className = "", title, icon, delay = 0 }) => {
+        const [isVisible, setIsVisible] = useState(false);
+        const cardRef = useRef(null);
+
+        useEffect(() => {
+          const observer = new IntersectionObserver(
+            ([entry]) => {
+              if (entry.isIntersecting) {
+                setIsVisible(true);
+                observer.disconnect(); // Only animate once
+              }
+            },
+            { threshold: 0.1 }
+          );
+
+          if (cardRef.current) {
+            observer.observe(cardRef.current);
+          }
+
+          return () => observer.disconnect();
+        }, []);
+
         return (
           <div 
-            className={`group relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl hover:border-slate-700 hover:-translate-y-1 ${className}`}
-            style={{ animationDelay: `${delay}ms` }}
+            ref={cardRef}
+            className={`group relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-2xl hover:border-slate-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'} ${className}`}
+            style={{ transitionDelay: `${delay}ms` }}
           >
             {/* Glow Effect on Hover */}
             <div className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100">
@@ -243,7 +285,8 @@
       const App = () => {
         const [displayText, setDisplayText] = useState('');
         const [showCursor, setShowCursor] = useState(true);
-        const [activeTag, setActiveTag] = useState(null);
+        const [activeTags, setActiveTags] = useState([]);
+        const [emailCopied, setEmailCopied] = useState(false);
 
         // Typing effect
         useEffect(() => {
@@ -268,6 +311,24 @@
             clearInterval(cursorInterval);
           };
         }, []);
+
+        const toggleTag = (label) => {
+          setActiveTags(prev => 
+            prev.includes(label) 
+              ? prev.filter(t => t !== label) 
+              : [...prev, label]
+          );
+        };
+
+        const copyEmail = (e, email) => {
+          e.preventDefault();
+          // Remove mailto: prefix if present
+          const emailAddr = email.replace('mailto:', '');
+          navigator.clipboard.writeText(emailAddr).then(() => {
+            setEmailCopied(true);
+            setTimeout(() => setEmailCopied(false), 2000);
+          });
+        };
 
         const getIcon = (iconName) => {
           switch(iconName) {
@@ -325,10 +386,27 @@
                 <div className="md:col-span-1 grid grid-cols-2 md:grid-cols-1 gap-4">
                   {PORTFOLIO_DATA.socials.map((social, idx) => (
                     <BentoCard key={social.platform} className="flex items-center justify-center !p-0 aspect-square md:aspect-auto md:h-full cursor-pointer hover:bg-slate-800/80" delay={200 + (idx * 100)}>
-                      <a href={social.url} className="flex flex-col items-center justify-center w-full h-full gap-2 text-slate-400 hover:text-white transition-colors p-6">
-                        {getIcon(social.icon)}
-                        <span className="text-xs font-medium">{social.platform}</span>
-                      </a>
+                      <div className="relative w-full h-full flex flex-col items-center justify-center">
+                        <a 
+                          href={social.url} 
+                          className="flex flex-col items-center justify-center w-full h-full gap-2 text-slate-400 hover:text-white transition-colors p-6 focus:outline-none focus:ring-inset"
+                          aria-label={`Visit ${social.platform} Profile`}
+                        >
+                          {getIcon(social.icon)}
+                          <span className="text-xs font-medium">{social.platform}</span>
+                        </a>
+                        
+                        {social.platform === "Email" && (
+                          <button
+                            onClick={(e) => copyEmail(e, social.url)}
+                            className="absolute top-2 right-2 p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 rounded-full transition-all border border-slate-700/50"
+                            aria-label="Copy Email Address"
+                            title="Copy Email Address"
+                          >
+                            {emailCopied ? <div className="text-emerald-400"><CheckIcon /></div> : <CopyIcon />}
+                          </button>
+                        )}
+                      </div>
                     </BentoCard>
                   ))}
                 </div>
@@ -337,7 +415,7 @@
                 <BentoCard title="Capabilities" icon={<LightningIcon />} className="md:col-span-2" delay={300}>
                   <div className="flex flex-wrap gap-3 mt-2">
                     {PORTFOLIO_DATA.skills.map((skill) => (
-                      <div key={skill.name} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 hover:border-violet-500/30 transition-all cursor-default">
+                      <div key={skill.name} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 hover:border-violet-500/30 transition-all cursor-default select-none">
                         <div className="text-violet-400 w-5 h-5">
                           {getIcon(skill.icon)}
                         </div>
@@ -373,14 +451,15 @@
                             {PORTFOLIO_DATA.featuredProject.description}
                         </p>
                         
-                        <div className="flex flex-wrap gap-3 py-2">
+                        <div className="flex flex-wrap gap-3 py-2" role="group" aria-label="Project Tech Stack Details">
                             {PORTFOLIO_DATA.featuredProject.tags.map(tag => {
-                              const isActive = activeTag === tag.label;
+                              const isActive = activeTags.includes(tag.label);
                               return (
                                 <button 
                                   key={tag.label} 
-                                  onClick={() => setActiveTag(isActive ? null : tag.label)}
-                                  className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border transition-all cursor-pointer select-none
+                                  onClick={() => toggleTag(tag.label)}
+                                  aria-pressed={isActive}
+                                  className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-slate-900
                                     ${isActive 
                                       ? 'bg-violet-600 border-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]' 
                                       : 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-violet-500/50 hover:text-slate-200'
@@ -393,23 +472,38 @@
                             })}
                         </div>
 
-                        {/* Expandable Detail Section */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeTag ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'}`}>
-                            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3 text-sm text-slate-300 flex items-start gap-3">
-                              <div className="text-violet-400 mt-0.5 shrink-0">
-                                  <SparklesIcon />
+                        {/* Expandable Detail Section - Multi-select supported */}
+                        <div className={`transition-all duration-300 ease-in-out ${activeTags.length > 0 ? 'opacity-100 mt-4' : 'opacity-0 mt-0 h-0 overflow-hidden'}`}>
+                            {activeTags.length === 0 ? null : (
+                              <div className="space-y-3">
+                                {activeTags.map(label => {
+                                  const tag = PORTFOLIO_DATA.featuredProject.tags.find(t => t.label === label);
+                                  return (
+                                    <div key={label} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3 text-sm text-slate-300 flex items-start gap-3 animate-fadeIn">
+                                      <div className="text-violet-400 mt-0.5 shrink-0">
+                                          <SparklesIcon />
+                                      </div>
+                                      <div>
+                                          <span className="block font-medium text-violet-200 mb-1">
+                                            {label} Insight:
+                                          </span>
+                                          {tag?.detail}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
                               </div>
-                              <div>
-                                  <span className="block font-medium text-violet-200 mb-1">
-                                    {activeTag ? `${activeTag} Insight:` : 'Insight:'}
-                                  </span>
-                                  {activeTag && PORTFOLIO_DATA.featuredProject.tags.find(t => t.label === activeTag)?.detail}
-                              </div>
-                            </div>
+                            )}
                         </div>
 
                         <div className="pt-2">
-                            <a href={PORTFOLIO_DATA.featuredProject.link} className="inline-flex items-center gap-2 bg-white text-slate-950 px-6 py-3 rounded-xl font-semibold hover:bg-violet-50 hover:scale-105 transition-all active:scale-95">
+                            <a 
+                              href={PORTFOLIO_DATA.featuredProject.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 bg-white text-slate-950 px-6 py-3 rounded-xl font-semibold hover:bg-violet-50 hover:scale-105 transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                              aria-label="View Live Demo of Fine Print Breaker"
+                            >
                               View Live Demo <ExternalLinkIcon />
                             </a>
                         </div>
