@@ -3,37 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alenjofi | AI & DS Engineer</title>
+    
+    <title>Alenjofi | AI Engineer & Rapid Prototyper</title>
+    <meta name="description" content="1st-Year B.Tech Student building production-ready AI applications. Creator of Fine Print Breaker. Rapid Prototyping with React & Gemini API." />
+    <meta name="author" content="Alenjofi" />
+    <meta name="theme-color" content="#020617" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://alenjofi.github.io/" />
+    <meta property="og:title" content="Alenjofi | AI-Native Developer" />
+    <meta property="og:description" content="I bridge the gap between complex AI models and intuitive user interfaces. Check out my latest project: Fine Print Breaker." />
+    <meta property="og:image" content="https://alenjofi.github.io/preview.png" /> <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Alenjofi | AI Engineer" />
+    <meta name="twitter:description" content="Building the Future with AI & Vibe Coding." />
+    <meta name="twitter:image" content="https://alenjofi.github.io/preview.png" />
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     
-    <!-- Babel for JSX transformation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Tailwind Config -->
     <script>
       tailwind.config = {
         theme: {
           extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
+            fontFamily: { sans: ['Inter', 'sans-serif'] },
             colors: {
-              slate: {
-                850: '#151e2e',
-                950: '#020617',
-              }
+              slate: { 850: '#151e2e', 950: '#020617' }
             },
             animation: {
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -52,26 +56,14 @@
       }
     </script>
     
-    <!-- Custom Styles -->
     <style>
-      body {
-        background-color: #020617;
-        color: #f8fafc;
-      }
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #0f172a;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #334155;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #475569;
-      }
+      body { background-color: #020617; color: #f8fafc; margin: 0; }
+      #root { opacity: 0; transition: opacity 0.6s ease-out; }
+      #root.loaded { opacity: 1; } /* Fade-in effect */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #0f172a; }
+      ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
   </head>
   <body>
