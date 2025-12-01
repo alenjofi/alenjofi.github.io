@@ -15,7 +15,7 @@ Unlike traditional developers who get stuck on syntax, I focus on **Product Visi
 My flagship project is **Fine Print Breaker**, a serverless SaaS tool that uses AI to audit legal contracts for predatory clauses.
 
 * **🔗 Live Demo:** [alenjofi.github.io/contract-audit](https://alenjofi.github.io/contract-audit/)
-* **🛠️ Tech:** React, Tailwind CSS, Google Gemini 1.5 Flash
+* **🛠️ Tech:** React, Tailwind CSS, Google Gemini 2.5 Flash
 * **✨ Key Feature:** "Fix Clause" Agent – Instantly rewrites unfair legal terms into safe, mutual language.
 
 ## 🧰 Capabilities & Stack
