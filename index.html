@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -29,7 +30,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -48,6 +49,7 @@
           extend: {
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
               slate: {
@@ -59,6 +61,8 @@
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'blob': 'blob 7s infinite',
               'fadeIn': 'fadeIn 0.5s ease-out forwards',
+              'cursor-blink': 'blink 1s step-start infinite',
+              'scanline': 'scanline 8s linear infinite',
             },
             keyframes: {
               blob: {
@@ -70,6 +74,14 @@
               fadeIn: {
                 '0%': { opacity: '0', transform: 'translateY(10px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              blink: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0' },
+              },
+              scanline: {
+                '0%': { transform: 'translateY(-100%)' },
+                '100%': { transform: 'translateY(100%)' }
               }
             }
           },
@@ -85,10 +97,19 @@
         color: #f8fafc;
         margin: 0;
         padding: 0;
-        overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
+        overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        transition: background-color 0.5s ease;
       }
+      
+      /* Hide default cursor on desktop to show custom cursor */
+      @media (pointer: fine) {
+        body, a, button, [role="button"], input {
+          cursor: none;
+        }
+      }
+
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
@@ -106,9 +127,49 @@
       
       /* Accessibility Focus Styles */
       *:focus-visible {
-        outline: 2px solid #8b5cf6; /* violet-500 */
+        outline: 2px solid #8b5cf6;
         outline-offset: 2px;
         border-radius: 4px;
+      }
+
+      /* MATRIX MODE STYLES */
+      .matrix-mode {
+        --matrix-green: #00ff41;
+        --matrix-bg: #000000;
+        font-family: 'JetBrains Mono', monospace !important;
+      }
+      
+      .matrix-mode body,
+      .matrix-mode main {
+        background-color: var(--matrix-bg) !important;
+        color: var(--matrix-green) !important;
+      }
+      
+      .matrix-mode * {
+        border-color: rgba(0, 255, 65, 0.3) !important;
+      }
+      
+      .matrix-mode h1, 
+      .matrix-mode h2, 
+      .matrix-mode h3, 
+      .matrix-mode p, 
+      .matrix-mode span, 
+      .matrix-mode div {
+        color: var(--matrix-green) !important;
+        text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+      }
+
+      .matrix-mode .bg-slate-900,
+      .matrix-mode .bg-slate-950,
+      .matrix-mode .bg-slate-800,
+      .matrix-mode .bg-violet-600 {
+        background-color: #050505 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+      }
+      
+      .matrix-mode svg {
+        stroke: var(--matrix-green) !important;
+        filter: drop-shadow(0 0 2px var(--matrix-green));
       }
     </style>
   </head>
@@ -125,7 +186,7 @@
         headline: "Building the Future with AI & Vibe Coding.",
         subHeadline: "I bridge the gap between complex ideas and working products instantly using AI orchestration.",
         status: "Open to Work",
-        about: "I am an AI-Native Developer. I don't just write code; I leverage advanced LLMs to bridge the gap between abstract concepts and functional reality. My expertise lies in orchestrating AI to build production-ready applications at unprecedented speed.",
+        about: "I am an AI-Native Developer. I don't just write code; I leverage advanced LLMs to bridge the gap between abstract concepts and functional reality. My expertise lies in orchestrating AI to build production-ready applications at unprecedented speed. Even this website you are looking at was 'Vibe Coded' in under 24 hours using a Single File Architecture.",
         skills: [
           { name: "Prompt Engineering", icon: "prompt" },
           { name: "AI Orchestration", icon: "orchestration" },
@@ -157,6 +218,35 @@
           { platform: "LinkedIn", url: "https://www.linkedin.com/in/alen-jofi-119bab375", icon: "linkedin" },
           { platform: "Email", url: "mailto:alenjofi66@gmail.com", icon: "mail" },
         ]
+      };
+
+      // --- HOOK: KONAMI CODE ---
+      const useKonamiCode = () => {
+        const [isHacked, setIsHacked] = useState(false);
+        const sequence = useRef([]);
+        const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        useEffect(() => {
+          const handleKeyDown = (e) => {
+            sequence.current = [...sequence.current, e.key];
+            
+            // Keep sequence length trimmed
+            if (sequence.current.length > KONAMI_CODE.length) {
+              sequence.current.shift();
+            }
+
+            // Check match
+            if (JSON.stringify(sequence.current) === JSON.stringify(KONAMI_CODE)) {
+              setIsHacked(prev => !prev);
+              sequence.current = []; // Reset after toggle
+            }
+          };
+
+          window.addEventListener('keydown', handleKeyDown);
+          return () => window.removeEventListener('keydown', handleKeyDown);
+        }, []);
+
+        return isHacked;
       };
 
       // --- COMPONENTS: ICONS ---
@@ -211,9 +301,290 @@
       const CheckIcon = () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       );
+      
+      const TerminalIcon = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+      );
 
-      // --- COMPONENT: BentoCard ---
-      const BentoCard = ({ children, className = "", title, icon, delay = 0 }) => {
+      // --- COMPONENT: Custom Cursor ---
+      const CustomCursor = ({ isHacked }) => {
+        const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+        const [isHovering, setIsHovering] = useState(false);
+        const cursorRef = useRef(null);
+        
+        // Use refs for the smooth following effect
+        const trailingRef = useRef(null);
+        const positionRef = useRef({ x: 0, y: 0 });
+        const trailingPositionRef = useRef({ x: 0, y: 0 });
+
+        useEffect(() => {
+          const updateMousePosition = (e) => {
+            const { clientX, clientY } = e;
+            positionRef.current = { x: clientX, y: clientY };
+            setMousePosition({ x: clientX, y: clientY });
+
+            // Check if hovering over clickable elements
+            const target = e.target;
+            const isClickable = target.closest('a') || target.closest('button') || target.closest('[role="button"]') || target.closest('input');
+            setIsHovering(!!isClickable);
+          };
+
+          const animateTrailingCursor = () => {
+            const { x, y } = positionRef.current;
+            const { x: trailX, y: trailY } = trailingPositionRef.current;
+            
+            // Linear interpolation for smooth lag
+            const dx = x - trailX;
+            const dy = y - trailY;
+            
+            trailingPositionRef.current.x += dx * 0.15;
+            trailingPositionRef.current.y += dy * 0.15;
+
+            if (trailingRef.current) {
+              trailingRef.current.style.transform = `translate3d(${trailingPositionRef.current.x}px, ${trailingPositionRef.current.y}px, 0)`;
+            }
+
+            requestAnimationFrame(animateTrailingCursor);
+          };
+
+          window.addEventListener("mousemove", updateMousePosition);
+          const animationFrame = requestAnimationFrame(animateTrailingCursor);
+
+          return () => {
+            window.removeEventListener("mousemove", updateMousePosition);
+            cancelAnimationFrame(animationFrame);
+          };
+        }, []);
+
+        const borderColor = isHacked ? 'border-[#00ff41]' : 'border-violet-500/50';
+        const bgColor = isHacked ? 'bg-[#00ff41]/20' : 'bg-violet-500/10';
+
+        return (
+          <div className="hidden md:block pointer-events-none fixed inset-0 z-[9999]">
+            {/* Main Dot */}
+            <div 
+              className={`absolute w-2 h-2 ${isHacked ? 'bg-[#00ff41]' : 'bg-white'} rounded-full mix-blend-difference transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100 ease-out`}
+              style={{ left: mousePosition.x, top: mousePosition.y }}
+            />
+            {/* Glowing Trailer */}
+            <div 
+              ref={trailingRef}
+              className={`absolute left-0 top-0 w-8 h-8 rounded-full border ${borderColor} ${bgColor} -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out ${isHovering ? 'scale-150 opacity-80' : 'scale-100'}`}
+              style={{ willChange: 'transform' }}
+            />
+          </div>
+        );
+      };
+
+      // --- COMPONENT: Live Terminal ---
+      const Terminal = ({ isHacked }) => {
+        const [lines, setLines] = useState([]);
+        const [booted, setBooted] = useState(false);
+        const sequence = [
+          { text: "> Connect: Google_AI_Studio...", delay: 200 },
+          { text: "> Prompt_Ingestion: 100%", delay: 800 },
+          { text: "> Generative_UI: Rendering...", delay: 1500 },
+          { text: "> Manual_Coding: 0% (Skipped)", delay: 2400 },
+          { text: "> System_State: VIBE_CODED 🟢", delay: 3000 },
+        ];
+
+        useEffect(() => {
+          let timeouts = [];
+
+          sequence.forEach(({ text, delay }, index) => {
+            const timeout = setTimeout(() => {
+              setLines(prev => {
+                // Prevent duplicate lines if re-rendered
+                if (prev.includes(text)) return prev;
+                return [...prev, text];
+              });
+              if (index === sequence.length - 1) setBooted(true);
+            }, delay);
+            timeouts.push(timeout);
+          });
+
+          return () => timeouts.forEach(clearTimeout);
+        }, []);
+
+        useEffect(() => {
+          if (isHacked) {
+             setLines(prev => [...prev, "> SUPERUSER_ACCESS: GRANTED 🔓"]);
+          }
+        }, [isHacked]);
+
+        return (
+          <div className="font-mono text-sm h-full w-full flex flex-col justify-between">
+            <div className="space-y-2">
+              {lines.map((line, i) => (
+                <div key={i} className={`${isHacked ? 'text-[#00ff41]' : 'text-emerald-400/90'} drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]`}>
+                  {line}
+                </div>
+              ))}
+              {!booted && (
+                <div className={`${isHacked ? 'text-[#00ff41]' : 'text-emerald-400/90'} animate-pulse`}>
+                  <span className={`inline-block w-2 h-4 ${isHacked ? 'bg-[#00ff41]' : 'bg-emerald-500'} align-middle ml-1`}></span>
+                </div>
+              )}
+              {booted && (
+                 <div className={`${isHacked ? 'text-[#00ff41] border-[#00ff41]/50' : 'text-slate-500 border-slate-800'} mt-4 border-t pt-2`}>
+                   System Online. Waiting for input...
+                   <span className={`inline-block w-2 h-4 ${isHacked ? 'bg-[#00ff41]/50' : 'bg-emerald-500/50'} align-middle ml-1 animate-cursor-blink`}></span>
+                 </div>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      // --- COMPONENT: Particle Background (Canvas) ---
+      const ParticleBackground = ({ isHacked }) => {
+        const canvasRef = useRef(null);
+
+        useEffect(() => {
+          const canvas = canvasRef.current;
+          const ctx = canvas.getContext('2d');
+          let animationFrameId;
+          let particles = [];
+          
+          // Configuration
+          const particleCount = 60;
+          const connectionDistance = 150;
+          const mouseDistance = 200;
+          const particleColor = isHacked ? 'rgba(0, 255, 65, 0.5)' : 'rgba(139, 92, 246, 0.5)'; // Green or Violet
+          const lineColor = isHacked ? 'rgba(0, 255, 65, 0.15)' : 'rgba(139, 92, 246, 0.15)';
+          
+          let mouse = { x: null, y: null };
+
+          const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          };
+
+          class Particle {
+            constructor() {
+              this.x = Math.random() * canvas.width;
+              this.y = Math.random() * canvas.height;
+              this.vx = (Math.random() - 0.5) * 0.5;
+              this.vy = (Math.random() - 0.5) * 0.5;
+              this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+              this.x += this.vx;
+              this.y += this.vy;
+
+              // Bounce off edges
+              if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+              if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+              ctx.fillStyle = particleColor;
+              ctx.fill();
+            }
+          }
+
+          const init = () => {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+              particles.push(new Particle());
+            }
+          };
+
+          const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Handle Particles
+            particles.forEach(particle => {
+              particle.update();
+              particle.draw();
+            });
+
+            // Draw Connections
+            for (let i = 0; i < particles.length; i++) {
+              for (let j = i; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < connectionDistance) {
+                  ctx.beginPath();
+                  ctx.strokeStyle = lineColor;
+                  ctx.lineWidth = 1;
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.stroke();
+                }
+              }
+
+              // Connect to mouse
+              if (mouse.x != null) {
+                 const dx = particles[i].x - mouse.x;
+                 const dy = particles[i].y - mouse.y;
+                 const distance = Math.sqrt(dx * dx + dy * dy);
+                 
+                 if (distance < mouseDistance) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = lineColor;
+                    ctx.lineWidth = 1.5;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.stroke();
+                 }
+              }
+            }
+
+            animationFrameId = requestAnimationFrame(animate);
+          };
+
+          const handleMouseMove = (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+          };
+          
+          const handleMouseLeave = () => {
+            mouse.x = null;
+            mouse.y = null;
+          }
+
+          window.addEventListener('resize', resizeCanvas);
+          window.addEventListener('mousemove', handleMouseMove);
+          window.addEventListener('mouseout', handleMouseLeave);
+
+          resizeCanvas();
+          init();
+          animate();
+
+          return () => {
+            window.removeEventListener('resize', resizeCanvas);
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseout', handleMouseLeave);
+            cancelAnimationFrame(animationFrameId);
+          };
+        }, [isHacked]); // Re-init when isHacked changes color
+
+        return (
+          <canvas 
+            ref={canvasRef} 
+            className="fixed inset-0 z-0 pointer-events-none"
+          />
+        );
+      };
+
+      // --- COMPONENT: CRT Overlay (Matrix Mode Only) ---
+      const ScanlineOverlay = () => (
+        <div className="fixed inset-0 pointer-events-none z-[9998] overflow-hidden">
+          {/* Scanline Bar */}
+          <div className="w-full h-1 bg-white/5 opacity-50 absolute top-0 animate-scanline shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+          {/* Static Noise */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] pointer-events-none"></div>
+        </div>
+      );
+
+      // --- COMPONENT: BentoCard (Spotlight Edition) ---
+      const BentoCard = ({ children, className = "", title, icon, delay = 0, isHacked }) => {
         const [isVisible, setIsVisible] = useState(false);
         const cardRef = useRef(null);
 
@@ -222,35 +593,63 @@
             ([entry]) => {
               if (entry.isIntersecting) {
                 setIsVisible(true);
-                observer.disconnect(); // Only animate once
+                observer.disconnect();
               }
             },
             { threshold: 0.1 }
           );
 
-          if (cardRef.current) {
-            observer.observe(cardRef.current);
-          }
-
+          if (cardRef.current) observer.observe(cardRef.current);
           return () => observer.disconnect();
         }, []);
+
+        const handleMouseMove = (e) => {
+          if (!cardRef.current) return;
+          const div = cardRef.current;
+          const rect = div.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          div.style.setProperty('--mouse-x', `${x}px`);
+          div.style.setProperty('--mouse-y', `${y}px`);
+        };
+        
+        const spotlightColor = isHacked ? 'rgba(0, 255, 65, 0.4)' : 'rgba(139, 92, 246, 0.4)';
+        const sheenColor = isHacked ? 'rgba(0, 255, 65, 0.1)' : 'rgba(139, 92, 246, 0.1)';
 
         return (
           <div 
             ref={cardRef}
-            className={`group relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-2xl hover:border-slate-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'} ${className}`}
+            onMouseMove={handleMouseMove}
+            className={`group relative rounded-3xl bg-slate-900 overflow-hidden transition-all duration-700 ease-out hover:scale-[1.01] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'} ${className}`}
             style={{ transitionDelay: `${delay}ms` }}
           >
-            {/* Glow Effect on Hover */}
-            <div className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100">
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-indigo-600/20 blur-lg" />
-            </div>
+            {/* 1. Spotlight Overlay (Reveals Border) */}
+            <div 
+              className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover:opacity-100"
+              style={{
+                background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), ${spotlightColor}, transparent 40%)`,
+                zIndex: 0
+              }}
+            />
 
-            <div className="relative z-10 flex h-full flex-col">
+            {/* 2. Inner Content Mask (Creates the Border look) */}
+            <div className="absolute inset-[1px] rounded-[calc(1.5rem-1px)] bg-slate-950 z-10" />
+
+            {/* 3. Inner Spotlight (Surface Sheen) */}
+            <div 
+              className="pointer-events-none absolute inset-[1px] rounded-[calc(1.5rem-1px)] opacity-0 transition duration-300 group-hover:opacity-100 z-20"
+              style={{
+                background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), ${sheenColor}, transparent 40%)`
+              }}
+            />
+
+            {/* Content Container */}
+            <div className="relative z-30 flex h-full flex-col p-6">
               {(title || icon) && (
-                <div className="flex items-center gap-3 mb-4 text-slate-400 group-hover:text-violet-400 transition-colors">
-                  {icon && <span className="p-2 rounded-full bg-slate-800/50 group-hover:bg-violet-900/30 transition-colors">{icon}</span>}
-                  {title && <h3 className="font-semibold text-sm uppercase tracking-wider">{title}</h3>}
+                <div className={`flex items-center gap-3 mb-4 transition-colors ${isHacked ? 'text-[#00ff41]' : 'text-slate-400 group-hover:text-violet-400'}`}>
+                  {icon && <span className={`p-2 rounded-full transition-colors border ${isHacked ? 'bg-[#00ff41]/20 border-[#00ff41]' : 'bg-slate-800/50 border-slate-800 group-hover:bg-violet-900/20 group-hover:border-violet-500/30'}`}>{icon}</span>}
+                  {title && <h3 className="font-semibold text-sm uppercase tracking-wider font-mono">{title}</h3>}
                 </div>
               )}
               <div className="flex-1">
@@ -262,31 +661,12 @@
       };
 
       // --- MAIN APP ---
-      const BackgroundGrid = () => (
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          {/* Grid Pattern */}
-          <div 
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `linear-gradient(#6366f1 1px, transparent 1px), linear-gradient(to right, #6366f1 1px, transparent 1px)`,
-              backgroundSize: '40px 40px'
-            }}
-          />
-          {/* Radial Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
-          
-          {/* Animated Blobs */}
-          <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-violet-900/20 rounded-full blur-[100px] animate-blob" />
-          <div className="absolute top-[20%] right-[-10%] w-96 h-96 bg-indigo-900/20 rounded-full blur-[100px] animate-blob animation-delay-2000" />
-          <div className="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-blue-900/20 rounded-full blur-[100px] animate-blob animation-delay-4000" />
-        </div>
-      );
-
       const App = () => {
         const [displayText, setDisplayText] = useState('');
         const [showCursor, setShowCursor] = useState(true);
         const [activeTags, setActiveTags] = useState([]);
         const [emailCopied, setEmailCopied] = useState(false);
+        const isHacked = useKonamiCode();
 
         // Typing effect
         useEffect(() => {
@@ -322,7 +702,6 @@
 
         const copyEmail = (e, email) => {
           e.preventDefault();
-          // Remove mailto: prefix if present
           const emailAddr = email.replace('mailto:', '');
           navigator.clipboard.writeText(emailAddr).then(() => {
             setEmailCopied(true);
@@ -346,36 +725,38 @@
         };
 
         return (
-          <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-violet-500/30 selection:text-violet-200 py-12 px-4 sm:px-6 relative">
-            <BackgroundGrid />
+          <div className={`min-h-screen font-sans selection:bg-violet-500/30 selection:text-violet-200 py-12 px-4 sm:px-6 relative cursor-none transition-colors duration-500 ${isHacked ? 'matrix-mode' : 'bg-slate-950 text-slate-100'}`}>
+            <CustomCursor isHacked={isHacked} />
+            <ParticleBackground isHacked={isHacked} />
+            {isHacked && <ScanlineOverlay />}
 
             <main className="relative z-10 max-w-6xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-min">
                 
                 {/* 1. Hero Card */}
-                <BentoCard className="md:col-span-3 min-h-[300px] flex flex-col justify-center" delay={100}>
+                <BentoCard className="md:col-span-3 min-h-[300px] flex flex-col justify-center" delay={100} isHacked={isHacked}>
                   <div className="flex flex-col justify-between h-full">
                     <div className="space-y-6">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium w-fit animate-pulse-slow">
+                      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium w-fit animate-pulse-slow ${isHacked ? 'bg-[#00ff41]/10 border-[#00ff41] text-[#00ff41]' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'}`}>
                         <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isHacked ? 'bg-[#00ff41]' : 'bg-emerald-400'}`}></span>
+                          <span className={`relative inline-flex rounded-full h-2 w-2 ${isHacked ? 'bg-[#00ff41]' : 'bg-emerald-500'}`}></span>
                         </span>
                         {PORTFOLIO_DATA.status}
                       </div>
                       
-                      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
+                      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
                         {displayText}
-                        <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} text-violet-500 transition-opacity duration-100`}>|</span>
+                        <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} ${isHacked ? 'text-[#00ff41]' : 'text-violet-500'} transition-opacity duration-100`}>|</span>
                       </h1>
                       
-                      <p className="text-lg text-slate-400 max-w-2xl">
+                      <p className={`text-lg max-w-2xl ${isHacked ? 'text-[#00ff41]/80' : 'text-slate-400'}`}>
                         {PORTFOLIO_DATA.subHeadline}
                       </p>
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-slate-800/50 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-                        <span className="font-semibold text-slate-300">{PORTFOLIO_DATA.name}</span>
+                    <div className={`mt-8 pt-6 border-t flex flex-wrap items-center gap-4 text-sm ${isHacked ? 'border-[#00ff41]/30 text-[#00ff41]/70' : 'border-slate-800/50 text-slate-500'}`}>
+                        <span className={`font-semibold ${isHacked ? 'text-[#00ff41]' : 'text-slate-300'}`}>{PORTFOLIO_DATA.name}</span>
                         <span>•</span>
                         <span>{PORTFOLIO_DATA.role}</span>
                     </div>
@@ -385,11 +766,11 @@
                 {/* 2. Connect Card (Socials) */}
                 <div className="md:col-span-1 grid grid-cols-2 md:grid-cols-1 gap-4">
                   {PORTFOLIO_DATA.socials.map((social, idx) => (
-                    <BentoCard key={social.platform} className="flex items-center justify-center !p-0 aspect-square md:aspect-auto md:h-full cursor-pointer hover:bg-slate-800/80" delay={200 + (idx * 100)}>
+                    <BentoCard key={social.platform} isHacked={isHacked} className="flex items-center justify-center !p-0 aspect-square md:aspect-auto md:h-full cursor-pointer hover:bg-slate-900/50" delay={200 + (idx * 100)}>
                       <div className="relative w-full h-full flex flex-col items-center justify-center">
                         <a 
                           href={social.url} 
-                          className="flex flex-col items-center justify-center w-full h-full gap-2 text-slate-400 hover:text-white transition-colors p-6 focus:outline-none focus:ring-inset"
+                          className={`flex flex-col items-center justify-center w-full h-full gap-2 transition-colors p-6 focus:outline-none focus:ring-inset ${isHacked ? 'text-[#00ff41] hover:text-[#00ff41]' : 'text-slate-400 hover:text-white'}`}
                           aria-label={`Visit ${social.platform} Profile`}
                         >
                           {getIcon(social.icon)}
@@ -399,11 +780,11 @@
                         {social.platform === "Email" && (
                           <button
                             onClick={(e) => copyEmail(e, social.url)}
-                            className="absolute top-2 right-2 p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 rounded-full transition-all border border-slate-700/50"
+                            className={`absolute top-2 right-2 p-2 rounded-full transition-all border ${isHacked ? 'text-[#00ff41] border-[#00ff41] bg-[#00ff41]/10' : 'text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border-slate-700/50'}`}
                             aria-label="Copy Email Address"
                             title="Copy Email Address"
                           >
-                            {emailCopied ? <div className="text-emerald-400"><CheckIcon /></div> : <CopyIcon />}
+                            {emailCopied ? <div className={isHacked ? "text-[#00ff41]" : "text-emerald-400"}><CheckIcon /></div> : <CopyIcon />}
                           </button>
                         )}
                       </div>
@@ -412,59 +793,71 @@
                 </div>
 
                 {/* 3. Capabilities Card */}
-                <BentoCard title="Capabilities" icon={<LightningIcon />} className="md:col-span-2" delay={300}>
+                <BentoCard title="Capabilities" icon={<LightningIcon />} className="md:col-span-2" delay={300} isHacked={isHacked}>
                   <div className="flex flex-wrap gap-3 mt-2">
                     {PORTFOLIO_DATA.skills.map((skill) => (
-                      <div key={skill.name} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 hover:border-violet-500/30 transition-all cursor-default select-none">
-                        <div className="text-violet-400 w-5 h-5">
+                      <div key={skill.name} className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all cursor-default select-none ${isHacked ? 'bg-[#00ff41]/10 border-[#00ff41] text-[#00ff41]' : 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:border-violet-500/30 text-slate-200'}`}>
+                        <div className={`w-5 h-5 ${isHacked ? 'text-[#00ff41]' : 'text-violet-400'}`}>
                           {getIcon(skill.icon)}
                         </div>
-                        <span className="text-sm font-medium text-slate-200">{skill.name}</span>
+                        <span className="text-sm font-medium">{skill.name}</span>
                       </div>
                     ))}
                   </div>
                 </BentoCard>
 
-                {/* 4. About Me Card */}
-                <BentoCard title="Philosophy" icon={<BrainCircuitIcon />} className="md:col-span-2" delay={400}>
-                  <p className="text-slate-300 leading-relaxed text-base">
+                {/* 4. Philosophy Card (Restored) */}
+                <BentoCard title="Philosophy" icon={<BrainCircuitIcon />} className="md:col-span-2" delay={400} isHacked={isHacked}>
+                  <p className={`leading-relaxed text-base ${isHacked ? 'text-[#00ff41]' : 'text-slate-300'}`}>
                     {PORTFOLIO_DATA.about}
                   </p>
                   <div className="mt-4 flex gap-2">
-                    <div className="h-1 w-12 rounded bg-gradient-to-r from-violet-500 to-indigo-500" />
+                    <div className={`h-1 w-12 rounded ${isHacked ? 'bg-[#00ff41]' : 'bg-gradient-to-r from-violet-500 to-indigo-500'}`} />
                   </div>
                 </BentoCard>
 
-                {/* 5. Featured Project Card (Large Highlight) */}
-                <BentoCard className="md:col-span-4 bg-gradient-to-br from-slate-900 to-slate-900" delay={500}>
-                  <div className="flex flex-col md:flex-row gap-8 items-start">
+                {/* 5. Live Terminal Card (Section Break - Full Width) */}
+                <BentoCard title="Terminal" icon={<TerminalIcon />} className="md:col-span-4 bg-slate-950 min-h-[220px]" delay={450} isHacked={isHacked}>
+                   <Terminal isHacked={isHacked} />
+                </BentoCard>
+
+                {/* 6. Featured Project Card (Large Highlight) */}
+                <BentoCard className="md:col-span-4" delay={500} isHacked={isHacked}>
+                  <div className="flex flex-col md:flex-row gap-8 items-start relative z-40">
                       <div className="flex-1 space-y-4">
                         <div className="flex items-center gap-3 mb-2">
-                            <span className="px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold uppercase tracking-wider">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isHacked ? 'bg-[#00ff41]/10 border border-[#00ff41] text-[#00ff41]' : 'bg-violet-500/10 border border-violet-500/20 text-violet-400'}`}>
                               Featured Project
                             </span>
                         </div>
-                        <h2 className="text-3xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-400 group-hover:to-indigo-400 transition-all">
+                        <h2 className={`text-3xl font-bold transition-all ${isHacked ? 'text-[#00ff41]' : 'text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-400 group-hover:to-indigo-400'}`}>
                             {PORTFOLIO_DATA.featuredProject.title}
                         </h2>
-                        <p className="text-slate-400 text-lg">
+                        <p className={`text-lg ${isHacked ? 'text-[#00ff41]/80' : 'text-slate-400'}`}>
                             {PORTFOLIO_DATA.featuredProject.description}
                         </p>
                         
                         <div className="flex flex-wrap gap-3 py-2" role="group" aria-label="Project Tech Stack Details">
                             {PORTFOLIO_DATA.featuredProject.tags.map(tag => {
                               const isActive = activeTags.includes(tag.label);
+                              // Conditional styling mess simplified:
+                              let btnClass = "flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border transition-all cursor-none select-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 ";
+                              if (isHacked) {
+                                btnClass += isActive 
+                                  ? "bg-[#00ff41] border-[#00ff41] text-black font-bold" 
+                                  : "bg-transparent border-[#00ff41] text-[#00ff41] hover:bg-[#00ff41]/20";
+                              } else {
+                                btnClass += isActive 
+                                  ? "bg-violet-600 border-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] focus:ring-violet-500" 
+                                  : "bg-slate-950/50 border-slate-800 text-slate-400 hover:border-violet-500/50 hover:text-slate-200 focus:ring-violet-500";
+                              }
+
                               return (
                                 <button 
                                   key={tag.label} 
                                   onClick={() => toggleTag(tag.label)}
                                   aria-pressed={isActive}
-                                  className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-slate-900
-                                    ${isActive 
-                                      ? 'bg-violet-600 border-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]' 
-                                      : 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-violet-500/50 hover:text-slate-200'
-                                    }
-                                  `}
+                                  className={btnClass}
                                 >
                                   <CheckCircleIcon /> {tag.label}
                                 </button>
@@ -472,19 +865,19 @@
                             })}
                         </div>
 
-                        {/* Expandable Detail Section - Multi-select supported */}
+                        {/* Expandable Detail Section */}
                         <div className={`transition-all duration-300 ease-in-out ${activeTags.length > 0 ? 'opacity-100 mt-4' : 'opacity-0 mt-0 h-0 overflow-hidden'}`}>
                             {activeTags.length === 0 ? null : (
                               <div className="space-y-3">
                                 {activeTags.map(label => {
                                   const tag = PORTFOLIO_DATA.featuredProject.tags.find(t => t.label === label);
                                   return (
-                                    <div key={label} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3 text-sm text-slate-300 flex items-start gap-3 animate-fadeIn">
-                                      <div className="text-violet-400 mt-0.5 shrink-0">
+                                    <div key={label} className={`border rounded-lg p-3 text-sm flex items-start gap-3 animate-fadeIn ${isHacked ? 'bg-[#00ff41]/10 border-[#00ff41] text-[#00ff41]' : 'bg-slate-800/50 border-slate-700/50 text-slate-300'}`}>
+                                      <div className={`mt-0.5 shrink-0 ${isHacked ? 'text-[#00ff41]' : 'text-violet-400'}`}>
                                           <SparklesIcon />
                                       </div>
                                       <div>
-                                          <span className="block font-medium text-violet-200 mb-1">
+                                          <span className={`block font-medium mb-1 ${isHacked ? 'text-[#00ff41]' : 'text-violet-200'}`}>
                                             {label} Insight:
                                           </span>
                                           {tag?.detail}
@@ -501,7 +894,7 @@
                               href={PORTFOLIO_DATA.featuredProject.link} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 bg-white text-slate-950 px-6 py-3 rounded-xl font-semibold hover:bg-violet-50 hover:scale-105 transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                              className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 ${isHacked ? 'bg-[#00ff41] text-black hover:shadow-[0_0_10px_#00ff41]' : 'bg-white text-slate-950 hover:bg-violet-50 focus:ring-violet-500'}`}
                               aria-label="View Live Demo of Fine Print Breaker"
                             >
                               View Live Demo <ExternalLinkIcon />
@@ -510,26 +903,26 @@
                       </div>
 
                       {/* Visual Representation of Project */}
-                      <div className="w-full md:w-1/3 aspect-video rounded-xl bg-slate-800 border border-slate-700 p-4 relative group-hover:border-violet-500/30 transition-colors flex flex-col gap-3 shadow-inner">
-                        {/* Mock UI for "Fine Print Breaker" */}
-                        <div className="flex items-center gap-2 border-b border-slate-700 pb-2">
+                      <div className={`w-full md:w-1/3 aspect-video rounded-xl p-4 relative transition-colors flex flex-col gap-3 shadow-inner overflow-hidden border ${isHacked ? 'bg-[#00ff41]/5 border-[#00ff41]' : 'bg-slate-900/50 border-slate-800 group-hover:border-violet-500/30'}`}>
+                        {/* Mock UI */}
+                        <div className={`flex items-center gap-2 border-b pb-2 ${isHacked ? 'border-[#00ff41]/30' : 'border-slate-700'}`}>
                             <div className="w-2 h-2 rounded-full bg-red-500"/>
                             <div className="w-2 h-2 rounded-full bg-yellow-500"/>
                             <div className="w-2 h-2 rounded-full bg-green-500"/>
-                            <div className="h-2 w-20 bg-slate-700 rounded-full ml-auto"/>
+                            <div className={`h-2 w-20 rounded-full ml-auto ${isHacked ? 'bg-[#00ff41]/20' : 'bg-slate-700'}`}/>
                         </div>
                         <div className="space-y-2">
-                            <div className="h-2 w-3/4 bg-slate-700 rounded animate-pulse"/>
-                            <div className="h-2 w-full bg-slate-700 rounded animate-pulse delay-75"/>
-                            <div className="h-2 w-5/6 bg-slate-700 rounded animate-pulse delay-100"/>
+                            <div className={`h-2 w-3/4 rounded animate-pulse ${isHacked ? 'bg-[#00ff41]/20' : 'bg-slate-700'}`}/>
+                            <div className={`h-2 w-full rounded animate-pulse delay-75 ${isHacked ? 'bg-[#00ff41]/20' : 'bg-slate-700'}`}/>
+                            <div className={`h-2 w-5/6 rounded animate-pulse delay-100 ${isHacked ? 'bg-[#00ff41]/20' : 'bg-slate-700'}`}/>
                         </div>
-                        <div className="mt-auto p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                            <div className="flex items-center gap-2 text-red-400 text-xs font-bold mb-1">
+                        <div className={`mt-auto p-3 border rounded-lg ${isHacked ? 'bg-[#00ff41]/10 border-[#00ff41]' : 'bg-red-500/10 border-red-500/20'}`}>
+                            <div className={`flex items-center gap-2 text-xs font-bold mb-1 ${isHacked ? 'text-[#00ff41]' : 'text-red-400'}`}>
                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                               Risk Detected
                             </div>
-                            <div className="h-1.5 w-full bg-red-900/30 rounded-full overflow-hidden">
-                              <div className="h-full w-2/3 bg-red-500 rounded-full"/>
+                            <div className={`h-1.5 w-full rounded-full overflow-hidden ${isHacked ? 'bg-[#00ff41]/20' : 'bg-red-900/30'}`}>
+                              <div className={`h-full w-2/3 rounded-full ${isHacked ? 'bg-[#00ff41]' : 'bg-red-500'}`}/>
                             </div>
                         </div>
                       </div>
@@ -539,8 +932,8 @@
               </div>
 
               {/* Footer */}
-              <footer className="mt-16 text-center text-slate-600 text-sm">
-                <p>© {new Date().getFullYear()} Alenjofi. Built with AI🤖.</p>
+              <footer className={`mt-16 text-center text-sm ${isHacked ? 'text-[#00ff41]' : 'text-slate-600'}`}>
+                <p>© {new Date().getFullYear()} Alenjofi. Architected with Vision, Built by Gemini. (Zero manual lines written).</p>
               </footer>
 
             </main>
